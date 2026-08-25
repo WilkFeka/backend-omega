@@ -37,6 +37,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
     "http://omegasm.com.ar:4200",
     "http://reyser.omegasm.com.ar:4200",
+    "http://demo.omegasm.com.ar:4200",
 
 ]
 
@@ -46,6 +47,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:4200",
     "http://omegasm.com.ar:4200",
     "http://reyser.omegasm.com.ar:4200",
+    "http://demo.omegasm.com.ar:4200",
 
 ]
 
@@ -62,6 +64,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'Tenancy',
     'Users',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -108,7 +111,7 @@ DATABASES = {
         "NAME": "omega",
         "USER": "omega_admin",
         "PASSWORD": "@Admin-2020",
-        "HOST": "127.0.0.1",
+        "HOST": "localhost",
         "PORT": "5432",
     },
 
@@ -117,7 +120,7 @@ DATABASES = {
         "NAME": "omega_reyser",
         "USER": "omega_admin",
         "PASSWORD": "@Admin-2020",
-        "HOST": "127.0.0.1",
+        "HOST": "localhost",
         "PORT": "5432",
     },
 
@@ -126,7 +129,7 @@ DATABASES = {
         "NAME": "omega_demo",
         "USER": "omega_admin",
         "PASSWORD": "@Admin-2020",
-        "HOST": "127.0.0.1",
+        "HOST": "localhost",
         "PORT": "5432",
     },
 }
