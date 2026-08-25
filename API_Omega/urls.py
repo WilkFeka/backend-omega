@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 import Users.views as Users_views
+import Employees.views as Employees_views
 
 urlpatterns = [
     path('api/admin/', admin.site.urls),
@@ -30,4 +31,8 @@ urlpatterns = [
     # USERS
     path('api/users/', Users_views.UserListCreateAPIView.as_view(), name='user-list-create'),
     path('api/users/<int:user_id>/', Users_views.UserDetailAPIView.as_view(), name='user-retrieve-update-destroy'),
+
+    # EMPLEADOS
+    path('api/empleados/', Employees_views.EmployeeListCreateAPIView.as_view(), name='employee-list-create'),
+    path('api/empleados/<int:employee_id>/', Employees_views.EmployeeDetailAPIView.as_view(), name='employee-retrieve-update-destroy'),
 ]

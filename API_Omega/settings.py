@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'Tenancy',
     'Users',
     'rest_framework',
+    'Employees',
 ]
 
 MIDDLEWARE = [
