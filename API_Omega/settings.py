@@ -25,7 +25,29 @@ SECRET_KEY = 'django-insecure-6b5yk*(cj5ex5t5(ym4#_@re)dp_gzeo)w1$9b5ekez6#96p*m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "omegasm.com.ar",
+    "*.omegasm.com.ar",
+    "reyser.omegasm.com.ar",
+    "demo.omegasm.com.ar",
+]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",
+    "http://omegasm.com.ar:4200",
+    "http://reyser.omegasm.com.ar:4200",
+
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:4200",
+    "http://omegasm.com.ar:4200",
+    "http://reyser.omegasm.com.ar:4200",
+
+]
 
 
 # Application definition
@@ -37,9 +59,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "corsheaders",
+    'Tenancy',
+    'Users',
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -47,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'Tenancy.middleware.TenantMiddleware',
 ]
 
 ROOT_URLCONF = 'API_Omega.urls'
@@ -72,14 +99,41 @@ WSGI_APPLICATION = 'API_Omega.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+
+# ACA VAMOS AGREGANDO LAS DB QUE VAMOS CREANDO POR CLIENTE
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "omega",
+        "USER": "omega_admin",
+        "PASSWORD": "@Admin-2020",
+        "HOST": "127.0.0.1",
+        "PORT": "5432",
+    },
+
+    "reyser": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "omega_reyser",
+        "USER": "omega_admin",
+        "PASSWORD": "@Admin-2020",
+        "HOST": "127.0.0.1",
+        "PORT": "5432",
+    },
+
+    "demo": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "omega_demo",
+        "USER": "omega_admin",
+        "PASSWORD": "@Admin-2020",
+        "HOST": "127.0.0.1",
+        "PORT": "5432",
+    },
 }
 
-
+DATABASE_ROUTERS = [
+    "Tenancy.router.TenantDatabaseRouter"
+]
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
 
