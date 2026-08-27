@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 import Users.views as Users_views
 import Employees.views as Employees_views
+import Salaries.views as Salaries_views
 
 urlpatterns = [
     path('api/admin/', admin.site.urls),
@@ -35,4 +36,21 @@ urlpatterns = [
     # EMPLEADOS
     path('api/empleados/', Employees_views.EmployeeListCreateAPIView.as_view(), name='employee-list-create'),
     path('api/empleados/<int:employee_id>/', Employees_views.EmployeeDetailAPIView.as_view(), name='employee-retrieve-update-destroy'),
+    path('api/empleados/grupos/', Employees_views.EmployeeGroupListCreateAPIView.as_view(), name='employee-group-list-create'),
+    path('api/empleados/grupos/<int:group_id>/', Employees_views.EmployeeGroupDetailAPIView.as_view(), name='employee-group-detail'),
+
+    # SALARIOS
+  path('api/salarios/', Salaries_views.SalaryListCreateAPIView.as_view(), name='salary-list-create'),
+
+path('api/salarios/<int:salary_id>/', Salaries_views.SalaryDetailAPIView.as_view(), name='salary-retrieve-update-destroy'),
+
+path('api/salarios/empleado/<int:employee_id>/', Salaries_views.EmployeeSalaryAPIView.as_view(), name='employee-salary'),
+
+path('api/salarios/<int:salary_id>/descuentos/', Salaries_views.SalaryDiscountListCreateAPIView.as_view(), name='salary-discount-list-create'),
+
+path('api/salarios/<int:salary_id>/descuentos/<int:discount_id>/', Salaries_views.SalaryDiscountDetailAPIView.as_view(), name='salary-discount-detail'),
+
+path('api/salarios/<int:salary_id>/adicionales/', Salaries_views.SalaryAdditionalListCreateAPIView.as_view(), name='salary-additional-list-create'),
+
+path('api/salarios/<int:salary_id>/adicionales/<int:additional_id>/', Salaries_views.SalaryAdditionalDetailAPIView.as_view(), name='salary-additional-detail'),
 ]

@@ -3,6 +3,7 @@ from Tenancy.context import get_tenant_db
 
 TENANT_APPS = {
     "Employees",
+    "Salaries"
 }
 
 
