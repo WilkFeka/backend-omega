@@ -25,7 +25,11 @@ def employee_to_dict(employee):
         "nombre": employee.nombre,
         "apellido": employee.apellido,
         "matricula": employee.matricula,
-        "gremio": employee.gremio
+        "gremio": employee.gremio,
+        "group": (
+            {"id": employee.group_id, "nombre": employee.group.nombre}
+            if employee.group_id else None
+        )
     }
 
 
@@ -167,7 +171,8 @@ class SalaryListCreateAPIView(APIView):
         salaries = Salary.objects.filter(
             periodo=periodo
         ).select_related(
-            "employee"
+            "employee",
+            "employee__group"
         ).prefetch_related(
             "discounts",
             "additionals"
@@ -288,7 +293,8 @@ class SalaryDetailAPIView(APIView):
         return Salary.objects.filter(
             id=salary_id
         ).select_related(
-            "employee"
+            "employee",
+            "employee__group"
         ).prefetch_related(
             "discounts",
             "additionals"

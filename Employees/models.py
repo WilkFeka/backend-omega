@@ -12,6 +12,17 @@ class EmployeeGroup(models.Model):
         return self.nombre
 
 
+class EmployeePosition(models.Model):
+    nombre = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        db_table = "EmployeePositions"
+        ordering = ["nombre"]
+
+    def __str__(self):
+        return self.nombre
+
+
 class Employee(models.Model):
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
@@ -23,6 +34,14 @@ class Employee(models.Model):
 
     group = models.ForeignKey(
         EmployeeGroup,
+        on_delete=models.SET_NULL,
+        related_name="employees",
+        null=True,
+        blank=True
+    )
+
+    position = models.ForeignKey(
+        EmployeePosition,
         on_delete=models.SET_NULL,
         related_name="employees",
         null=True,

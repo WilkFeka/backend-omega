@@ -38,6 +38,8 @@ urlpatterns = [
     path('api/empleados/<int:employee_id>/', Employees_views.EmployeeDetailAPIView.as_view(), name='employee-retrieve-update-destroy'),
     path('api/empleados/grupos/', Employees_views.EmployeeGroupListCreateAPIView.as_view(), name='employee-group-list-create'),
     path('api/empleados/grupos/<int:group_id>/', Employees_views.EmployeeGroupDetailAPIView.as_view(), name='employee-group-detail'),
+    path('api/empleados/cargos/', Employees_views.EmployeePositionListCreateAPIView.as_view(), name='employee-position-list-create'),
+    path('api/empleados/cargos/<int:position_id>/', Employees_views.EmployeePositionDetailAPIView.as_view(), name='employee-position-detail'),
 
     # SALARIOS
   path('api/salarios/', Salaries_views.SalaryListCreateAPIView.as_view(), name='salary-list-create'),

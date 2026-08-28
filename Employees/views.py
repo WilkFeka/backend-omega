@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Employee, EmployeeGroup
+from .models import Employee, EmployeeGroup, EmployeePosition
 from Users.permissions import IsTenantAdmin
 
 
@@ -26,6 +26,10 @@ def employee_to_dict(employee):
         "group": (
             {"id": employee.group_id, "nombre": employee.group.nombre}
             if employee.group_id else None
+        ),
+        "position": (
+            {"id": employee.position_id, "nombre": employee.position.nombre}
+            if employee.position_id else None
         )
     }
 
@@ -40,7 +44,7 @@ class EmployeeListCreateAPIView(APIView):
 
     # Lista
     def get(self, request):
-        employees = Employee.objects.select_related("group").all().order_by(
+        employees = Employee.objects.select_related("group", "position").all().order_by(
             "apellido", "nombre"
         )
 
@@ -66,6 +70,7 @@ class EmployeeListCreateAPIView(APIView):
         fecha_nacimiento = data.get("fecha_nacimiento")
         fecha_ingreso = data.get("fecha_ingreso")
         group_id = data.get("group_id")
+        position_id = data.get("position_id")
 
         errors = {}
 
@@ -88,6 +93,7 @@ class EmployeeListCreateAPIView(APIView):
             )
 
         group = None
+        position = None
 
         if group_id:
             group = EmployeeGroup.objects.filter(id=group_id).first()
@@ -95,6 +101,15 @@ class EmployeeListCreateAPIView(APIView):
             if not group:
                 return Response(
                     {"detail": "Grupo no encontrado."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+        if position_id:
+            position = EmployeePosition.objects.filter(id=position_id).first()
+
+            if not position:
+                return Response(
+                    {"detail": "Cargo no encontrado."},
                     status=status.HTTP_404_NOT_FOUND
                 )
 
@@ -109,7 +124,8 @@ class EmployeeListCreateAPIView(APIView):
                     telefono=telefono or None,
                     fecha_nacimiento=fecha_nacimiento,
                     fecha_ingreso=fecha_ingreso or None,
-                    group=group
+                    group=group,
+                    position=position
                 )
 
         except (IntegrityError, ValueError):
@@ -227,6 +243,22 @@ class EmployeeDetailAPIView(APIView):
             else:
                 employee.group = None
 
+        if "position_id" in data:
+            position_id = data["position_id"]
+
+            if position_id:
+                position = EmployeePosition.objects.filter(id=position_id).first()
+
+                if not position:
+                    return Response(
+                        {"detail": "Cargo no encontrado."},
+                        status=status.HTTP_404_NOT_FOUND
+                    )
+
+                employee.position = position
+            else:
+                employee.position = None
+
         try:
             employee.save()
 
@@ -339,4 +371,59 @@ class EmployeeGroupDetailAPIView(APIView):
             )
 
         group.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# ====================== EMPLOYEE POSITIONS ======================
+
+def position_to_dict(position):
+    return {
+        "id": position.id,
+        "nombre": position.nombre,
+        "employee_count": position.employees.count()
+    }
+
+
+class EmployeePositionListCreateAPIView(APIView):
+    permission_classes = [IsTenantAdmin]
+
+    def get(self, request):
+        positions = EmployeePosition.objects.all().order_by("nombre")
+        data = [position_to_dict(position) for position in positions]
+        return Response({"count": len(data), "positions": data})
+
+    def post(self, request):
+        nombre = str(request.data.get("nombre", "")).strip()
+        if not nombre:
+            return Response({"detail": "El nombre del cargo es obligatorio."}, status=status.HTTP_400_BAD_REQUEST)
+        if EmployeePosition.objects.filter(nombre__iexact=nombre).exists():
+            return Response({"detail": "Ya existe un cargo con ese nombre."}, status=status.HTTP_409_CONFLICT)
+        position = EmployeePosition.objects.create(nombre=nombre)
+        return Response(position_to_dict(position), status=status.HTTP_201_CREATED)
+
+
+class EmployeePositionDetailAPIView(APIView):
+    permission_classes = [IsTenantAdmin]
+
+    def get_position(self, position_id):
+        return EmployeePosition.objects.filter(id=position_id).first()
+
+    def patch(self, request, position_id):
+        position = self.get_position(position_id)
+        if not position:
+            return Response({"detail": "Cargo no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+        nombre = str(request.data.get("nombre", "")).strip()
+        if not nombre:
+            return Response({"detail": "El nombre del cargo es obligatorio."}, status=status.HTTP_400_BAD_REQUEST)
+        if EmployeePosition.objects.filter(nombre__iexact=nombre).exclude(id=position.id).exists():
+            return Response({"detail": "Ya existe un cargo con ese nombre."}, status=status.HTTP_409_CONFLICT)
+        position.nombre = nombre
+        position.save(update_fields=["nombre"])
+        return Response(position_to_dict(position))
+
+    def delete(self, request, position_id):
+        position = self.get_position(position_id)
+        if not position:
+            return Response({"detail": "Cargo no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+        position.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
