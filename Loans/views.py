@@ -49,6 +49,15 @@ def installment_to_dict(item):
 
 def loan_to_dict(loan, include_installments=False):
     paid = loan.paid_amount
+    current_period = timezone.localdate().replace(day=1)
+    collected_this_month = loan.installments.filter(
+        payment_date__year=current_period.year,
+        payment_date__month=current_period.month,
+    ).aggregate(value=Sum("paid_amount"))["value"] or Decimal("0")
+    overdue_installments = loan.installments.filter(
+        period__lt=current_period,
+        status__in=[LoanInstallment.Status.PENDING, LoanInstallment.Status.PARTIAL],
+    ).count()
     data = {
         "id": loan.id,
         "person_type": loan.person_type,
@@ -59,6 +68,8 @@ def loan_to_dict(loan, include_installments=False):
         "total_amount": loan.total_amount,
         "paid_amount": paid,
         "balance": max(loan.total_amount - paid, Decimal("0")),
+        "collected_this_month": collected_this_month,
+        "overdue_installments": overdue_installments,
         "delivery_date": loan.delivery_date,
         "first_installment_period": loan.first_installment_period,
         "installment_count": loan.installment_count,

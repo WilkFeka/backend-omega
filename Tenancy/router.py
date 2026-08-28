@@ -5,6 +5,8 @@ TENANT_APPS = {
     "Employees",
     "Salaries",
     "Loans",
+    "VatRefunds",
+    "Expenses",
 }
 
 

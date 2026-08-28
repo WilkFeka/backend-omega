@@ -20,6 +20,8 @@ import Users.views as Users_views
 import Employees.views as Employees_views
 import Salaries.views as Salaries_views
 import Loans.views as Loans_views
+import VatRefunds.views as VatRefunds_views
+import Expenses.views as Expenses_views
 
 urlpatterns = [
     path('api/admin/', admin.site.urls),
@@ -62,4 +64,13 @@ path('api/salarios/<int:salary_id>/adicionales/<int:additional_id>/', Salaries_v
     path('api/prestamos/<int:loan_id>/', Loans_views.LoanDetailAPIView.as_view(), name='loan-detail'),
     path('api/prestamos/<int:loan_id>/cuotas/', Loans_views.LoanInstallmentListCreateAPIView.as_view(), name='loan-installment-list-create'),
     path('api/prestamos/<int:loan_id>/cuotas/<int:installment_id>/', Loans_views.LoanInstallmentDetailAPIView.as_view(), name='loan-installment-detail'),
+    # REINTEGRO IVA
+    path('api/reintegros-iva/beneficiarios/', VatRefunds_views.VatBeneficiaryListCreateAPIView.as_view(), name='vat-beneficiary-list-create'),
+    path('api/reintegros-iva/beneficiarios/<int:beneficiary_id>/', VatRefunds_views.VatBeneficiaryDetailAPIView.as_view(), name='vat-beneficiary-detail'),
+    path('api/reintegros-iva/beneficiarios/<int:beneficiary_id>/detalles/', VatRefunds_views.VatRefundDetailListCreateAPIView.as_view(), name='vat-refund-detail-list-create'),
+    path('api/reintegros-iva/beneficiarios/<int:beneficiary_id>/detalles/<int:detail_id>/', VatRefunds_views.VatRefundDetailAPIView.as_view(), name='vat-refund-detail'),
+    # GASTOS
+    path('api/gastos/', Expenses_views.ExpenseListCreateAPIView.as_view(), name='expense-list-create'),
+    path('api/gastos/copiar-anterior/', Expenses_views.ExpenseCopyPreviousAPIView.as_view(), name='expense-copy-previous'),
+    path('api/gastos/<int:expense_id>/', Expenses_views.ExpenseDetailAPIView.as_view(), name='expense-detail'),
 ]
