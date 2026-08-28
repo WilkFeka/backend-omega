@@ -19,6 +19,7 @@ from django.urls import path
 import Users.views as Users_views
 import Employees.views as Employees_views
 import Salaries.views as Salaries_views
+import Loans.views as Loans_views
 
 urlpatterns = [
     path('api/admin/', admin.site.urls),
@@ -55,4 +56,10 @@ path('api/salarios/<int:salary_id>/descuentos/<int:discount_id>/', Salaries_view
 path('api/salarios/<int:salary_id>/adicionales/', Salaries_views.SalaryAdditionalListCreateAPIView.as_view(), name='salary-additional-list-create'),
 
 path('api/salarios/<int:salary_id>/adicionales/<int:additional_id>/', Salaries_views.SalaryAdditionalDetailAPIView.as_view(), name='salary-additional-detail'),
+
+    # PRESTAMOS
+    path('api/prestamos/', Loans_views.LoanListCreateAPIView.as_view(), name='loan-list-create'),
+    path('api/prestamos/<int:loan_id>/', Loans_views.LoanDetailAPIView.as_view(), name='loan-detail'),
+    path('api/prestamos/<int:loan_id>/cuotas/', Loans_views.LoanInstallmentListCreateAPIView.as_view(), name='loan-installment-list-create'),
+    path('api/prestamos/<int:loan_id>/cuotas/<int:installment_id>/', Loans_views.LoanInstallmentDetailAPIView.as_view(), name='loan-installment-detail'),
 ]
