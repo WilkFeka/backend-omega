@@ -73,4 +73,7 @@ path('api/salarios/<int:salary_id>/adicionales/<int:additional_id>/', Salaries_v
     path('api/gastos/', Expenses_views.ExpenseListCreateAPIView.as_view(), name='expense-list-create'),
     path('api/gastos/copiar-anterior/', Expenses_views.ExpenseCopyPreviousAPIView.as_view(), name='expense-copy-previous'),
     path('api/gastos/<int:expense_id>/', Expenses_views.ExpenseDetailAPIView.as_view(), name='expense-detail'),
+    path('api/gastos/<int:expense_id>/comprobantes/', Expenses_views.ExpenseAttachmentListCreateAPIView.as_view(), name='expense-attachment-create'),
+    path('api/gastos/<int:expense_id>/comprobantes/<int:attachment_id>/descargar/', Expenses_views.ExpenseAttachmentDetailAPIView.as_view(), name='expense-attachment-download'),
+    path('api/gastos/<int:expense_id>/comprobantes/<int:attachment_id>/', Expenses_views.ExpenseAttachmentDetailAPIView.as_view(), name='expense-attachment-delete'),
 ]
